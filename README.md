@@ -56,7 +56,7 @@ This is a React.js + TypeScript application for tracking shipments, presented en
 
 2. Navigate into the project directory:
     ```bash
-    cd shipment-tracking
+    cd Shipment-Tracking-Webpage
     ```
 
 3. Install the dependencies:
