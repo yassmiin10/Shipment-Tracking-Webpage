@@ -1,41 +1,77 @@
-# Getting Started with Create React App
+# Shipment Tracking Webpage (Arabic Interface)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a React.js + TypeScript application for tracking shipments, presented entirely in Arabic. The application prompts the user to enter a tracking number and then fetches relevant shipping data from the Bosta tracking API. The data is then displayed in a user-friendly and fully Arabic interface, including translated fields, Cairo font styling, and a default branch assumption if branch data is not provided.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Arabic Interface**: All text and UI elements are in Arabic.
+- **Progress Indicator Based on Shipment Status**: A visual progression bar is displayed to reflect the shipment’s current status (e.g., "تم إنشاء الشحنة", "تم استلام الشحنة من التاجر", "الشحنة خرجت للتسليم", "تم التسليم").
+- **Real-Time Shipment Tracking**: Retrieves and displays key shipment details such as:
+  - Tracking Number
+  - Last Update Date
+  - Provider
+  - Status
+  - Branch - Defaults to "مدينة نصر" if not provided by the API.
+- **Responsive UI**: Works across various screen sizes.
+- **Cairo Font Styling**: Uses the Cairo font for all Arabic text.
 
-### `npm start`
+## Data Flow
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. The user enters a shipment tracking number.
+2. The app sends a GET request to `https://tracking.bosta.co/shipments/track/<TRACKING_ID>`.
+3. The API returns a JSON object containing details, for example:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+    ```json
+    {
+      "provider": "Bosta",
+      "PromisedDate": "2020-07-22T19:07:50.883Z",
+      "TrackingNumber": "1094442",
+      "TrackingURL": "bosta.co/tracking-shipment/?track_num=1094442",
+      "SupportPhoneNumbers": ["19043"],
+      "CreateDate": "2020-07-21T17:37:31.147Z",
+      "isEditableShipment": false,
+      "nextWorkingDay": [{
+        "dayDate": "2020-07-23",
+        "dayName": "Thrusday"
+      }],
+      "isOnlinePaymentFeatureEnabled": false
+    }
+    ```
 
-### `npm test`
+4. The application extracts relevant fields, translates and formats them into Arabic, and displays them in the UI. The progression bar updates according to the shipment’s lifecycle stages.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Getting Started
 
-### `npm run build`
+### Prerequisites
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Node.js** (v12+ recommended)
+- **npm** (v6+ recommended)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/yassmiin10/Shipment-Tracking-Webpage.git
+    ```
 
-### `npm run eject`
+2. Navigate into the project directory:
+    ```bash
+    cd shipment-tracking
+    ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. Install the dependencies:
+    ```bash
+    npm install
+    ```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Running the Application
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+1. Start the development server:
+    ```bash
+    npm start
+    ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
+2. Open your browser and visit:
+    ```arduino
+    http://localhost:3000
+    ```
