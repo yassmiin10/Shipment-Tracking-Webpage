@@ -29,12 +29,14 @@ body {
 nav ul {
   display: flex;
   list-style-type: none;
-  padding: 0;
+  padding: 10;
+  gap: 20px;
 }
 
 nav ul li {
   margin-left: 20px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .language-switcher span {

@@ -6,7 +6,7 @@ import { formatDateArabic } from '../utils/dateFormatter';
 import './TrackingDetails.css';
 
 const TrackingDetails: React.FC = () => {
-  const { currentStatus, trackingNumber, provider, timestamp, promisedDate, statusHistory, loading, error } = useSelector((state: RootState) => state.tracking);
+  const { currentStatus, trackingNumber, provider, timestamp, promisedDate, statusHistory, loading, error, createDate } = useSelector((state: RootState) => state.tracking);
 
   if (loading) {
     return <div className="loading">جاري التحميل<span className="loading-dots">...</span></div>;
@@ -19,7 +19,6 @@ const TrackingDetails: React.FC = () => {
   if (!trackingNumber) {
     return null;
   }
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'DELIVERED':
@@ -41,6 +40,8 @@ const TrackingDetails: React.FC = () => {
         return 'جاري النقل';
       case 'OUT_FOR_DELIVERY':
         return 'خرج للتسليم';
+      case 'CREATED':
+        return 'تم إنشاء الشحنة';
       default:
         return 'غير معروف';
     }
@@ -59,8 +60,18 @@ const TrackingDetails: React.FC = () => {
     }
   };
 
+
   const estimatedDeliveryDate = new Date();
   estimatedDeliveryDate.setDate(estimatedDeliveryDate.getDate() + 3);
+
+  const steps = [
+    { status: 'CREATED', label: 'تم إنشاء الشحنة', icon: <AlertCircle /> },
+    { status: 'IN_TRANSIT', label: 'تم استلام الشحنة من التاجر', icon: <Package /> },
+    { status: 'OUT_FOR_DELIVERY', label: 'الشحنة خرجت للتسليم', icon: <Truck /> },
+    { status: 'DELIVERED', label: 'تم التسليم', icon: <CheckCircle /> },
+  ];
+
+  const currentStepIndex = steps.findIndex(step => step.status === currentStatus);
 
   return (
     <div className="tracking-details">
@@ -79,32 +90,28 @@ const TrackingDetails: React.FC = () => {
         </div>
         <div className="summary-item">
           <h3>موعد التسليم خلال</h3>
-          <p>{promisedDate ? formatDateArabic(promisedDate) : formatDateArabic(estimatedDeliveryDate.toISOString())}</p>
+          <p>{promisedDate ? formatDateArabic(promisedDate) : 'غير محدد'}</p>
         </div>
       </div>
 
       <div className="tracking-timeline">
-        <div className="timeline-step active">
-          <div className="step-icon"><AlertCircle /></div>
-          <p>تم إنشاء الشحنة</p>
-        </div>
-        <div className={`timeline-step ${currentStatus === 'IN_TRANSIT' ? 'active' : ''}`}>
-          <div className="step-icon"><Package /></div>
-          <p>تم استلام الشحنة من التاجر</p>
-        </div>
-        <div className={`timeline-step ${currentStatus === 'OUT_FOR_DELIVERY' ? 'active' : ''}`}>
-          <div className="step-icon"><Truck /></div>
-          <p>الشحنة خرجت للتسليم</p>
-        </div>
-        <div className={`timeline-step ${currentStatus === 'DELIVERED' ? 'active' : ''}`}>
-          <div className="step-icon"><CheckCircle /></div>
-          <p>تم التسليم</p>
-        </div>    
+        {steps.map((step, index) => (
+          <div 
+            key={step.status} 
+            className={`timeline-step ${index <= currentStepIndex ? 'completed' : ''} ${index === currentStepIndex ? 'active' : ''}`}
+          >
+            <div className="step-icon">
+              {index < currentStepIndex ? <CheckCircle /> : step.icon}
+            </div>
+            <p>{step.label}</p>
+          </div>
+        ))}
       </div>
+      <div className="tracking-details-container">
 
       <div className="tracking-history">
         <h3>تفاصيل الشحنة</h3>
-        {statusHistory && statusHistory.length > 0 ? (
+        {(createDate || (statusHistory && statusHistory.length > 0)) ? (
           <table>
             <thead>
               <tr>
@@ -114,7 +121,14 @@ const TrackingDetails: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {statusHistory.map((event, index) => (
+              {createDate && (
+                <tr>
+                  <td>مدينة نصر</td>
+                  <td>{formatDateArabic(createDate)}</td>
+                  <td>تم إنشاء الشحنة</td>
+                </tr>
+              )}
+              {statusHistory && statusHistory.map((event, index) => (
                 <tr key={index}>
                   <td>{event.hub || 'غير محدد'}</td>
                   <td>{formatDateArabic(event.timestamp)}</td>
@@ -130,13 +144,13 @@ const TrackingDetails: React.FC = () => {
 
       <div className="additional-info">
         <h3>معلومات إضافية</h3>
-        <p>إذا كانت لديك أي استفسارات حول شحنتك، يرجى الاتصال بخدمة العملاء على الرقم: 19043</p>
+        <p>إذا كانت لديك أي استفسارات حول شحنتك، يرجى الاتصال بخدمة العملاء على الرقم: 19034</p>
         <p>ساعات العمل: من الأحد إلى الخميس، 9 صباحًا - 5 مساءً</p>
       </div>
+    </div>
     </div>
   );
 };
 
 export default TrackingDetails;
-
 

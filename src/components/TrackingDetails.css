@@ -120,12 +120,58 @@ th {
   color: #666;
   padding: 20px;
 }
+.tracking-details-container {
+  display: flex; 
+  justify-content: space-between; 
+  gap: 20px; 
+}
+.tracking-history table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tracking-history th {
+  font-weight: bold;
+  background-color: #f5f5f5;
+  color: #333;
+  padding: 12px;
+  text-align: right;
+  border-bottom: 1px solid #e0e0e0;
+}
+.tracking-history {
+  flex: 2; 
+  align-items: flex-start;
+  gap:10px;
+}
+.tracking-history td {
+  padding: 12px;
+  text-align: right;
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+}
+
+.tracking-history td:last-child {
+  border-right: none;
+}
+
+.tracking-history tr:last-child td {
+  border-bottom: none;
+
+}
 
 .additional-info {
-  margin-top: 30px;
-  background-color: #f5f5f5;
-  padding: 20px;
-  border-radius: 8px;
+  flex: 1;
+  max-width: 300px; 
+  background-color: #f9f9f9; 
+  border: 1px solid #ddd; 
+  padding: 16px; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  word-wrap: break-word; 
 }
 
 .additional-info h3 {
@@ -198,3 +244,16 @@ th {
   }
 }
 
+.progress-bar {
+  height: 5px;
+  background-color: #e0e0e0;
+  position: relative;
+  margin: 20px 0;
+}
+
+.progress-bar span {
+  display: block;
+  height: 100%;
+  width: 50%; /* Adjust dynamically based on the current step */
+  background-color: #e30613;
+}

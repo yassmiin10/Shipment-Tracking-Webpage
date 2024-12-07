@@ -8,6 +8,7 @@ interface TrackingResponse {
   TrackingNumber: string;
   provider: string;
   PromisedDate: string;
+  CreateDate: string;
   TransitEvents: Array<{
     state: string;
     timestamp: string;
@@ -22,7 +23,9 @@ interface TrackingState {
   provider: string | null;
   timestamp: string | null;
   promisedDate: string | null;
+  createDate: string | null;
   statusHistory: Array<{ state: string; timestamp: string; hub: string }> | null;
+  color: string;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
   loading: boolean;
@@ -35,10 +38,25 @@ const initialState: TrackingState = {
   provider: null,
   timestamp: null,
   promisedDate: null,
+  createDate: null,
   statusHistory: null,
+  color: 'gray', // Default color
   status: 'idle',
   error: null,
   loading: false,
+};
+
+const getColorFromStatus = (status: string): string => {
+  switch (status) {
+    case 'DELIVERED':
+      return 'green';
+    case 'OUT_FOR_DELIVERY':
+      return 'blue';
+    case 'IN_TRANSIT':
+      return 'yellow';
+    default:
+      return 'gray';
+  }
 };
 
 export const fetchTracking = createAsyncThunk<TrackingResponse, string, { rejectValue: string }>(
@@ -67,24 +85,26 @@ const trackingSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchTracking.fulfilled, (state, action) => {
-        const { CurrentStatus, TrackingNumber, provider, PromisedDate, TransitEvents } = action.payload;
+        const { CurrentStatus, TrackingNumber, provider, PromisedDate, CreateDate, TransitEvents } = action.payload;
+
         state.currentStatus = CurrentStatus?.state ?? 'UNKNOWN';
         state.trackingNumber = TrackingNumber ?? 'N/A';
         state.provider = provider ?? 'N/A';
         state.timestamp = CurrentStatus?.timestamp ?? '';
         state.promisedDate = PromisedDate ?? '';
+        state.createDate = CreateDate ?? '';
         state.statusHistory = TransitEvents ?? [];
         state.data = action.payload;
+        state.color = getColorFromStatus(CurrentStatus?.state || 'UNKNOWN'); // Update the color
         state.status = 'succeeded';
         state.loading = false;
       })
       .addCase(fetchTracking.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message || 'Something went wrong';
+        state.error = action.payload || 'Something went wrong';
         state.loading = false;
       });
   },
 });
 
 export default trackingSlice.reducer;
-
